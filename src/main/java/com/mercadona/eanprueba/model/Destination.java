@@ -1,10 +1,7 @@
 package com.mercadona.eanprueba.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,11 +15,12 @@ import java.time.LocalDate;
 @Table (name = "Destination")
 public class Destination {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column (name = "CODIGO_DESTINO",nullable = false)
-    private String DestinationCode;
+    private Integer destinationCode;
     @Column (name = "NOMBRE_DESTINO", nullable = false)
-    private String DestinantionName;
+    private String destinantionName;
     @Column (name = "FECHA_CREACION", nullable = false)
     private LocalDate creationDate;
 }

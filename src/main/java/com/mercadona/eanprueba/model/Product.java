@@ -14,9 +14,10 @@ import java.time.LocalDate;
 @Table (name = "Product")
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "CODIGO_PRODUCTO", nullable = false)
-    private String productCode;
+    private Integer productCode;
     @Column (name = "NOMBRE_PRODUCTO",nullable = false)
     private String productName;
     @Column (name = "FECHA_CREACION", nullable = false)
