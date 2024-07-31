@@ -4,10 +4,12 @@ import com.mercadona.eanprueba.dto.DestinationDTO;
 import com.mercadona.eanprueba.model.Destination;
 import com.mercadona.eanprueba.service.DestinationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class DestinationController {
 
     private final DestinationService destinationService;
+
     @GetMapping()
     public ResponseEntity<List<Destination>> getAllDestinations () {
 
@@ -25,25 +28,38 @@ public class DestinationController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<DestinationDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<DestinationDTO> getById(@PathVariable Long id) throws NoSuchElementException {
 
         Optional<DestinationDTO> destination = Optional.ofNullable(destinationService.getById(id));
-        if (destination.isPresent()) {
-            return ResponseEntity.ok(destination.get());
-        }
-        return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(destination.get());
     }
 
     @PostMapping()
     public ResponseEntity<DestinationDTO> createDestination(@RequestBody DestinationDTO destinationDTO) {
         DestinationDTO newDestination = destinationService.createDestination(destinationDTO);
 
-        return ResponseEntity.ok(newDestination);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newDestination);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<DestinationDTO> updateDestination(@PathVariable Long id, @RequestBody DestinationDTO destinationDTO) {
-    return null;
+
+        if(destinationService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        DestinationDTO result = destinationService.updateDestination(id,destinationDTO);
+        return ResponseEntity.accepted().body(result);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteDestination(@PathVariable Long id) {
+
+        if(destinationService.getById(id) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        destinationService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

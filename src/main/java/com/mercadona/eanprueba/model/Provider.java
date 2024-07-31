@@ -23,5 +23,4 @@ public class Provider {
     @Column (name = "FECHA_CREACION",nullable = false)
     private LocalDate creationDate;
 
-
 }

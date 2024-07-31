@@ -6,11 +6,8 @@ import com.mercadona.eanprueba.model.Destination;
 import com.mercadona.eanprueba.repository.DestinationRepository;
 import com.mercadona.eanprueba.service.DestinationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,18 +28,14 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public DestinationDTO getById(Long id)  {
+    public DestinationDTO getById(Long id) {
 
         Optional<Destination> destinationOptional = destinationRepository.findById(id);
-        try {
-            if (destinationOptional.isPresent()) {
-                Destination destination = destinationOptional.get();
-                return DestinationDTOMapper.toDto(destination);
-            }
-        }catch (Exception e) {
-
+        if (!destinationOptional.isPresent()) {
+            throw new NoSuchElementException("El Id indicado no existe.");
         }
-        throw new NoSuchElementException("No existe el destino con el id " + id);
+        Destination destination = destinationOptional.get();
+        return DestinationDTOMapper.toDto(destination);
     }
 
     @Override
@@ -57,4 +50,24 @@ public class DestinationServiceImpl implements DestinationService {
 
         return DestinationDTOMapper.toDto(result);
     }
+
+    @Override
+    public DestinationDTO updateDestination(Long id, DestinationDTO destinationDTO) {
+
+        Destination destination = destinationRepository.findById(id).get();
+
+        destination.setDestinationCode(destinationDTO.getDestinationCode());
+        destination.setDestinantionName(destinationDTO.getDestinantionName());
+
+        Destination result = destinationRepository.save(destination);
+
+        return DestinationDTOMapper.toDto(result);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        destinationRepository.deleteById(id);
+    }
+
+
 }
